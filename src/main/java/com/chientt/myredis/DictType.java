@@ -1,6 +1,6 @@
 package com.chientt.myredis;
 
-public interface DictType {
-    int hashFunction(String key);
+public interface DictType<K,V> {
+    int hashFunction(K key);
 
 }
