@@ -6,9 +6,18 @@ public class Dict<K, V> {
     public static int DICT_HT_INITIAL_SIZE = 4;
     DictType<K, V> dictType;
     //String privateDate;
-    DictHashTable<K, V> hashTables[] = new DictHashTable[2];
+    public DictHashTable<K, V> hashTables[];
     int rehashIndex;/* rehashing not in progress if rehashidx == -1 */
     int iterators; /* number of iterators currently running */
+
+    public Dict() {
+        rehashIndex = -1;
+        hashTables = new DictHashTable[2];
+        hashTables[0] = new DictHashTable<K, V>(DICT_HT_INITIAL_SIZE);
+        hashTables[1] = new DictHashTable<K, V>(DICT_HT_INITIAL_SIZE);
+
+        dictType = new StringDictType<K, V>();
+    }
 
     int dictIntHashFunction(int key) {
         key += ~(key << 15);
@@ -42,7 +51,7 @@ public class Dict<K, V> {
     }
 
     static void resetDict(DictHashTable dictHashTable) {
-        dictHashTable.table = null;
+//        dictHashTable.table = null;
         dictHashTable.size = dictHashTable.sizeMask = dictHashTable.used = 0;
 
     }
@@ -82,6 +91,13 @@ public class Dict<K, V> {
         return DICT_OK;
     }
 
+    void copy() {
+        hashTables[0].size = hashTables[1].size;
+        hashTables[0].sizeMask = hashTables[1].sizeMask;
+        hashTables[0].used = hashTables[1].used;
+        hashTables[0].table = hashTables[1].table;
+    }
+
     /**
      * @param n steps of incremental rehashing
      * @return Returns 1 if there are still keys to move from the old to the new hash table, otherwise 0 is returned.
@@ -92,7 +108,7 @@ public class Dict<K, V> {
         while (n-- != 0) {
             /* Check if we already rehashed the whole table... */
             if (hashTables[0].used == 0) {
-                hashTables[0] = hashTables[1];
+                copy();
                 resetDict(hashTables[1]);
                 rehashIndex = -1;
                 return 0;
@@ -104,7 +120,8 @@ public class Dict<K, V> {
             while (entry != null) {
                 Entry nextEntry = entry.next;
                 //TODO String to generic
-                int hash = dictHashKey(entry.key);
+                int hash = dictHashKey(entry.key) & hashTables[1].sizeMask;
+
                 entry.next = hashTables[1].table[hash];
                 hashTables[1].table[hash] = entry;
                 hashTables[0].used--;
@@ -133,7 +150,7 @@ public class Dict<K, V> {
             rehash(1);
     }
 
-    int add(K key, V value) {
+    public int add(K key, V value) {
         if (isRehashing())
             rehashStep();
         int index = keyIndex(key);
@@ -154,7 +171,7 @@ public class Dict<K, V> {
      * Return 1 if the key was added from scratch, 0 if there was already an
      * element with such key and dictReplace() just performed a value update
      * operation. */
-    int replace(K key, V value) {
+    public int replace(K key, V value) {
         if (add(key, value) == DICT_OK)
             return 1;
         Entry entry = find(key);
@@ -162,7 +179,7 @@ public class Dict<K, V> {
         return 0;
     }
 
-    Entry find(K key) {
+    public Entry find(K key) {
         if (hashTables[0].size == 0)
             return null;
         if (isRehashing())
@@ -265,15 +282,39 @@ public class Dict<K, V> {
     }
 
     public static class Entry<K, V> {
-        Entry next;
-        K key;
-        V value;
+        public Entry next;
+        public K key;
+        public V value;
+
+        public Entry getNext() {
+            return next;
+        }
+
+        public void setNext(Entry next) {
+            this.next = next;
+        }
+
+        public K getKey() {
+            return key;
+        }
+
+        public void setKey(K key) {
+            this.key = key;
+        }
+
+        public V getValue() {
+            return value;
+        }
+
+        public void setValue(V value) {
+            this.value = value;
+        }
     }
 
     public static class DictHashTable<K, V> {
 
         Entry<K, V>[] table;
-        int size;
+        public int size;
         int sizeMask;
         int used;
 
