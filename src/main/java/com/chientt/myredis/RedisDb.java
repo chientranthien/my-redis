@@ -1,6 +1,6 @@
 package com.chientt.myredis;
 
-public class DB {
+public class RedisDb {
     Dict<String, RedisObject> dict;
     Dict<String, RedisObject> expires;
     Dict<String, RedisObject> blockingKeys;
