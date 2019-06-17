@@ -1,6 +1,8 @@
 package com.chientt.myredis;
 
+import java.io.File;
 import java.util.List;
+import java.util.concurrent.locks.Lock;
 
 public class RedisServer {
     final static int ANET_ERR_LEN = 256;
@@ -15,7 +17,7 @@ public class RedisServer {
     long dirtyBeforeBackgroundSave;
     List<Object> clients;
     Dict commands;
-    int loading;
+    boolean loading;
     long loadingTotalBytes;
     long loadingLoadedBytes;
     long loadingStartTime;
@@ -72,5 +74,57 @@ public class RedisServer {
     String masterHost;
     int masterPort;
     RedisClient master;
+    int replState;
+    long replTransferLeft;
+    int replTransferS;
+    int replTransferFd;
+    String replTranferTmpFile;
+    long replTransferLastIo;
+    int replServerStateData;
+    int maxClients;
+    long maxMemory;
+    int maxMemoryPolicy;
+    int maxMemorySamples;
+    int bpopBlockedClients;
+    int vmBlockedClients;
+    List unblockedClients;
+    int sortDesc;
+    int sortAplha;
+    int sortByPattern;
+    boolean vmEnabled;
+    String vmSwapFile;
+    long vmPageSize;
+    long vmPages;
+    long vmMaxMemory;
+    long hashMaxZipMapEntries;
+    long hashMapZipMapValue;
+    long listMaxZipListEntries;
+    long listMaxZipListValue;
+    long setMaxIntsetEntries;
+    File vmFp;
+    int vmFd;
+    long vmNextpage;
+    long vmNearPages;
+    String vmBitmap;
+    long unixTime;
+    List ioNewJobs;
+    List ioProcessing;
+    List ioProcessed;
+    List ioReadyClients;
+    Lock ioMutex;
+    Lock ioSwapFileMutex;
+    Lock ioThreadsAttr;
+    int ioActiveThreads;
+    int vmMaxThreads;
+    int ioReadyPipeRead;
+    int ioReadyPipeWrite;
+    long vmStatsUsagePage;
+    long vmStatsSwappedObjects;
+    long vmStatsSwapouts;
+    long vmStatsIns;
+    Dict pubsubChannels;
+    List pubsubPattern;
+    long lrulock = 22;
+    long lrulockPadding = 10;
 
 }
