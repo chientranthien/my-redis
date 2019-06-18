@@ -1,5 +1,5 @@
 package com.chientt.type;
 
 public enum StorageType {
-    inMemory, onDisk
+    vmMemory, vmSwapped,vmSwapping,vmLoading
 }

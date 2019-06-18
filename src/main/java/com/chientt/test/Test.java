@@ -4,6 +4,7 @@ import com.chientt.myredis.Dict;
 
 public class Test {
     public static void main(String[] args) {
+        System.out.println(String.valueOf("aaaa").length());
         Dict<String, String> dict = new Dict();
         dict.add("a","a1");
         dict.add("a","a2");

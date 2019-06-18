@@ -5,10 +5,10 @@ import com.chientt.type.ObjectType;
 import com.chientt.type.StorageType;
 
 public class RedisObject {
-    ObjectType objectType;
-    StorageType storageType;
-    EncodingType encodingType;
-    long lru;
-    int refCount;
-    Dict.Entry entry;
+    public ObjectType objectType;
+    public StorageType storageType;
+    public EncodingType encodingType;
+    public long lru;
+    public int refCount;
+    public Object ptr;
 }

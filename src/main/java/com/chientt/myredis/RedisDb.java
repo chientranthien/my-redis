@@ -1,14 +1,24 @@
 package com.chientt.myredis;
 
+import com.chientt.type.EncodingType;
+import com.chientt.type.ObjectType;
+import com.chientt.type.StorageType;
+
+import java.util.List;
+
+import static com.chientt.util.Util.createObject;
+
 public class RedisDb {
+
+    public static final int REDIS_STATIC_ARGS = 8;
     Dict<String, RedisObject> dict;
     Dict<String, Long> expires;
     Dict<String, RedisObject> blockingKeys;
     Dict<String, RedisObject> ioKeys;
     Dict<String, RedisObject> watchedKeys;
     int id;
-    RedisServer server;
-
+    public static RedisServer server;
+    SharedObjects shared;
     RedisObject lookupKey(String key) {
         Dict.Entry<String, RedisObject> entry = dict.find(key);
         if (entry != null) {
@@ -42,14 +52,58 @@ public class RedisDb {
         if (server.masterHost != null) {
             return System.currentTimeMillis() > when ? 1 : 0;
         }
-        if(System.currentTimeMillis() <= when)
+        if (System.currentTimeMillis() <= when)
             return 0;
         server.expiredKeysStat++;
-        return
+        return 1;
     }
 
-    private void propogateExpire(String key){
-        
+    private void propogateExpire(RedisObject key) {
+        RedisObject argv[] = new RedisObject[2];
+        argv[0] = createStringObject("DEL");
+        argv[1] = key;
+        if (server.appendOnly) {
+
+        }
+        if (server.slaves.size() > 0) {
+
+        }
+    }
+
+    void replicationFeedSlaves(List slaves, int dictId, RedisObject[] objects) {
+        RedisObject staticOutv[] = new RedisObject[REDIS_STATIC_ARGS * 3 + 1];
+        RedisObject[] outv = null;
+        if (objects.length <= staticOutv.length) {
+            outv = staticOutv;
+        } else {
+            outv = new RedisObject[objects.length * 3 + 1];
+        }
+
+        RedisObject lenObject = createObject(server,ObjectType.string, String.format("*%d\r\n", objects.length));
+
+        lenObject.refCount = 0;
+        int outc = 0;
+        outv[outc++] = lenObject;
+        for (int j = 0; j < objects.length; j++) {
+            lenObject = createObject(server,ObjectType.string, String.format("s%d\r\n", stringObjectLen(objects[j])));
+            lenObject.refCount = 0;
+            outv[outc++] = lenObject;
+            outv[outc++] = objects[j];
+            outv[outc++] = shared.crlf;
+        }
+    }
+
+    int stringObjectLen(RedisObject object) {
+        if (object.encodingType == EncodingType.raw)
+            return ((String) object.ptr).length();
+        else {
+            return String.valueOf(object.ptr).length();
+        }
+
+    }
+
+    void incrRefCount(RedisObject redisObject) {
+        redisObject.refCount++;
     }
 
     private long getExpire(String key) {
@@ -60,5 +114,10 @@ public class RedisDb {
         return entry.getValue();
 
     }
+
+    RedisObject createStringObject(Object key) {
+        return createObject(server,ObjectType.string, key);
+    }
+
 
 }
