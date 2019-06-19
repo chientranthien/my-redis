@@ -1,10 +1,13 @@
 package com.chientt.myredis;
 
+import com.chientt.myredis.dict.DictType;
+import com.chientt.myredis.dict.StringDictType;
+
 public class Dict<K, V> {
     public static int DICT_OK = 0;
     public static int DICT_ERROR = 1;
     public static int DICT_HT_INITIAL_SIZE = 4;
-    DictType<K, V> dictType;
+    DictType  dictType;
     //String privateDate;
     public DictHashTable<K, V> hashTables[];
     int rehashIndex;/* rehashing not in progress if rehashidx == -1 */
@@ -16,9 +19,17 @@ public class Dict<K, V> {
         hashTables[0] = new DictHashTable<K, V>(DICT_HT_INITIAL_SIZE);
         hashTables[1] = new DictHashTable<K, V>(DICT_HT_INITIAL_SIZE);
 
-        dictType = new StringDictType<K, V>();
+        dictType =   new StringDictType<K, V>();
     }
 
+    public Dict(DictType dictType) {
+        rehashIndex = -1;
+        hashTables = new DictHashTable[2];
+        hashTables[0] = new DictHashTable<K, V>(DICT_HT_INITIAL_SIZE);
+        hashTables[1] = new DictHashTable<K, V>(DICT_HT_INITIAL_SIZE);
+
+        this.dictType = dictType;
+    }
     int dictIntHashFunction(int key) {
         key += ~(key << 15);
         key ^= (key >> 10);

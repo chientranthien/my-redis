@@ -5,17 +5,21 @@ import com.chientt.myredis.RedisServer;
 import com.chientt.type.EncodingType;
 import com.chientt.type.ObjectType;
 import com.chientt.type.StorageType;
-import com.sun.org.apache.xerces.internal.dom.PSVIAttrNSImpl;
 
 public class Util {
-    public static RedisObject createObject(RedisServer server,ObjectType type, Object key) {
+    public static RedisObject createObject(RedisServer server, ObjectType type, Object key) {
         RedisObject redisObject = new RedisObject();
         redisObject.objectType = type;
         redisObject.encodingType = EncodingType.raw;
         redisObject.ptr = key;
         redisObject.refCount = 1;
-        redisObject.lru = server.lrulock;
+        redisObject.lru = server.lruclock;
         redisObject.storageType = StorageType.vmMemory;
         return redisObject;
     }
+
+    public static RedisObject createStringObject(RedisServer server, Object key) {
+        return createObject(server, ObjectType.string, key);
+    }
+
 }
