@@ -1,53 +1,56 @@
 package com.chientt.myredis;
 
+import com.chientt.ae.AeEventLoop;
 import com.chientt.myredis.dict.CommandTableDictType;
 
 import java.io.File;
 import java.util.List;
 import java.util.concurrent.locks.Lock;
 
-import static com.chientt.myredis.Dict.DICT_OK;
-
 public class RedisServer {
     public static final int REDIS_SERVERPORT = 6379;
-    final static int ANET_ERR_LEN = 256;
-    final static int REDIS_MAXIDLETIME = 60 * 5;
-    final static int REDIS_IOBUF_LEN = 1024;
-    final static int REDIS_LOADBUF_LEN = 1024;
-    final static int REDIS_STATIC_ARGS = 8;
-    final static int REDIS_DEFAULT_DBNUM = 16;
-    final static int REDIS_CONFIGLINE_MAX = 1024;
-    final static int REDIS_MAX_SYNC_TIME = 60;
-    final static int REDIS_EXPIRELOOKUPS_PER_CRON = 10;
-    final static int REDIS_MAX_WRITE_PER_EVENT = 1024 * 64;
-    final static int REDIS_REQUEST_MAX_SIZE = 1024 * 1024 * 256;
-    final static int REDIS_SHARED_INTEGERS = 10000;
-    final static int REDIS_REPLY_CHUNK_BYTES = 5 * 1500;
-    final static int REDIS_MAX_LOGMSG_LEN = 1024;
-    final static int REDIS_SLOWLOG_LOG_SLOWER_THAN = 10000;
-    final static int REDIS_SLOWLOG_MAX_LEN = 64;
-    final static int LOG_LOCAL0 = 16 << 3;
-    final static int APPENDFSYNC_NO = 0;
-    final static int APPENDFSYNC_ALWAYS = 1;
-    final static int APPENDFSYNC_EVERYSEC = 2;
+    public final static int ANET_ERR_LEN = 256;
+    public final static int REDIS_MAXIDLETIME = 60 * 5;
+    public final static int REDIS_IOBUF_LEN = 1024;
+    public final static int REDIS_LOADBUF_LEN = 1024;
+    public final static int REDIS_STATIC_ARGS = 8;
+    public final static int REDIS_DEFAULT_DBNUM = 16;
+    public final static int REDIS_CONFIGLINE_MAX = 1024;
+    public final static int REDIS_MAX_SYNC_TIME = 60;
+    public final static int REDIS_EXPIRELOOKUPS_PER_CRON = 10;
+    public final static int REDIS_MAX_WRITE_PER_EVENT = 1024 * 64;
+    public final static int REDIS_REQUEST_MAX_SIZE = 1024 * 1024 * 256;
+    public final static int REDIS_SHARED_INTEGERS = 10000;
+    public final static int REDIS_REPLY_CHUNK_BYTES = 5 * 1500;
+    public final static int REDIS_MAX_LOGMSG_LEN = 1024;
+    public final static int REDIS_SLOWLOG_LOG_SLOWER_THAN = 10000;
+    public final static int REDIS_SLOWLOG_MAX_LEN = 64;
+    public final static int LOG_LOCAL0 = 16 << 3;
+    public final static int APPENDFSYNC_NO = 0;
+    public final static int APPENDFSYNC_ALWAYS = 1;
+    public final static int APPENDFSYNC_EVERYSEC = 2;
 
-    final static int REDIS_MAXMEMORY_VOLATILE_LRU = 0;
-    final static int REDIS_MAXMEMORY_VOLATILE_TTL = 1;
-    final static int REDIS_MAXMEMORY_VOLATILE_RANDOM = 2;
-    final static int REDIS_MAXMEMORY_ALLKEYS_LRU = 3;
-    final static int REDIS_MAXMEMORY_ALLKEYS_RANDOM = 4;
-    final static int REDIS_MAXMEMORY_NO_EVICTION = 5;
-    final static int REDIS_HASH_MAX_ZIPMAP_ENTRIES = 512;
-    final static int REDIS_HASH_MAX_ZIPMAP_VALUE = 64;
-    final static int REDIS_LIST_MAX_ZIPLIST_ENTRIES = 512;
-    final static int REDIS_LIST_MAX_ZIPLIST_VALUE = 64;
-    final static int REDIS_SET_MAX_INTSET_ENTRIES = 512;
-    final static int REDIS_LRU_CLOCK_MAX = ((1 << 21) - 1);/* Max value of obj->lru */
-    final static int REDIS_LRU_CLOCK_RESOLUTION = 10; /* LRU clock resolution in seconds */
-    final static int REDIS_REPL_NONE = 0;   /* No active replication */
-    final static int REDIS_REPL_CONNECT = 1;    /* Must connect to master */
-    final static int REDIS_REPL_TRANSFER = 2;   /* Receiving .rdb from master */
-    final static int REDIS_REPL_CONNECTED = 3; /* Connected to master */
+    public final static int REDIS_MAXMEMORY_VOLATILE_LRU = 0;
+    public final static int REDIS_MAXMEMORY_VOLATILE_TTL = 1;
+    public final static int REDIS_MAXMEMORY_VOLATILE_RANDOM = 2;
+    public final static int REDIS_MAXMEMORY_ALLKEYS_LRU = 3;
+    public final static int REDIS_MAXMEMORY_ALLKEYS_RANDOM = 4;
+    public final static int REDIS_MAXMEMORY_NO_EVICTION = 5;
+    public final static int REDIS_HASH_MAX_ZIPMAP_ENTRIES = 512;
+    public final static int REDIS_HASH_MAX_ZIPMAP_VALUE = 64;
+    public final static int REDIS_LIST_MAX_ZIPLIST_ENTRIES = 512;
+    public final static int REDIS_LIST_MAX_ZIPLIST_VALUE = 64;
+    public final static int REDIS_SET_MAX_INTSET_ENTRIES = 512;
+    public final static int REDIS_LRU_CLOCK_MAX = ((1 << 21) - 1);/* Max value of obj->lru */
+    public final static int REDIS_LRU_CLOCK_RESOLUTION = 10; /* LRU clock resolution in seconds */
+    public final static int REDIS_REPL_NONE = 0;   /* No active replication */
+    public final static int REDIS_REPL_CONNECT = 1;    /* Must connect to master */
+    public final static int REDIS_REPL_TRANSFER = 2;   /* Receiving .rdb from master */
+    public final static int REDIS_REPL_CONNECTED = 3; /* Connected to master */
+    public final static int REDIS_REPL_WAIT_BGSAVE_START = 3; /* master waits bgsave to start feeding it */
+    public final static int REDIS_REPL_WAIT_BGSAVE_END = 4; /* master waits bgsave to start bulk DB transmission */
+    public final static int REDIS_REPL_SEND_BULK = 5; /* master is sending the bulk DB */
+    public final static int REDIS_REPL_ONLINE = 6;
 
     public static final double R_Zero = 0.0;
     public static final double R_PosInf = 1.0 / R_Zero;
@@ -174,131 +177,130 @@ public class RedisServer {
     public long lrulockPadding = 10;
 
 
-
-
     RedisCommand readonlyCommandTable[] = {
-            new RedisCommand("get",getCommand,2,0,null,1,1,1),
-            {"set",setCommand,3,REDIS_CMD_DENYOOM,NULL,0,0,0},
-            {"setnx",setnxCommand,3,REDIS_CMD_DENYOOM,NULL,0,0,0},
-            {"setex",setexCommand,4,REDIS_CMD_DENYOOM,NULL,0,0,0},
-            {"append",appendCommand,3,REDIS_CMD_DENYOOM,NULL,1,1,1},
-            {"strlen",strlenCommand,2,0,NULL,1,1,1},
-            {"del",delCommand,-2,0,NULL,0,0,0},
-            {"exists",existsCommand,2,0,NULL,1,1,1},
-            {"setbit",setbitCommand,4,REDIS_CMD_DENYOOM,NULL,1,1,1},
-            {"getbit",getbitCommand,3,0,NULL,1,1,1},
-            {"setrange",setrangeCommand,4,REDIS_CMD_DENYOOM,NULL,1,1,1},
-            {"getrange",getrangeCommand,4,0,NULL,1,1,1},
-            {"substr",getrangeCommand,4,0,NULL,1,1,1},
-            {"incr",incrCommand,2,REDIS_CMD_DENYOOM,NULL,1,1,1},
-            {"decr",decrCommand,2,REDIS_CMD_DENYOOM,NULL,1,1,1},
-            {"mget",mgetCommand,-2,0,NULL,1,-1,1},
-            {"rpush",rpushCommand,3,REDIS_CMD_DENYOOM,NULL,1,1,1},
-            {"lpush",lpushCommand,3,REDIS_CMD_DENYOOM,NULL,1,1,1},
-            {"rpushx",rpushxCommand,3,REDIS_CMD_DENYOOM,NULL,1,1,1},
-            {"lpushx",lpushxCommand,3,REDIS_CMD_DENYOOM,NULL,1,1,1},
-            {"linsert",linsertCommand,5,REDIS_CMD_DENYOOM,NULL,1,1,1},
-            {"rpop",rpopCommand,2,0,NULL,1,1,1},
-            {"lpop",lpopCommand,2,0,NULL,1,1,1},
-            {"brpop",brpopCommand,-3,0,NULL,1,1,1},
-            {"brpoplpush",brpoplpushCommand,4,REDIS_CMD_DENYOOM,NULL,1,2,1},
-            {"blpop",blpopCommand,-3,0,NULL,1,1,1},
-            {"llen",llenCommand,2,0,NULL,1,1,1},
-            {"lindex",lindexCommand,3,0,NULL,1,1,1},
-            {"lset",lsetCommand,4,REDIS_CMD_DENYOOM,NULL,1,1,1},
-            {"lrange",lrangeCommand,4,0,NULL,1,1,1},
-            {"ltrim",ltrimCommand,4,0,NULL,1,1,1},
-            {"lrem",lremCommand,4,0,NULL,1,1,1},
-            {"rpoplpush",rpoplpushCommand,3,REDIS_CMD_DENYOOM,NULL,1,2,1},
-            {"sadd",saddCommand,3,REDIS_CMD_DENYOOM,NULL,1,1,1},
-            {"srem",sremCommand,3,0,NULL,1,1,1},
-            {"smove",smoveCommand,4,0,NULL,1,2,1},
-            {"sismember",sismemberCommand,3,0,NULL,1,1,1},
-            {"scard",scardCommand,2,0,NULL,1,1,1},
-            {"spop",spopCommand,2,0,NULL,1,1,1},
-            {"srandmember",srandmemberCommand,2,0,NULL,1,1,1},
-            {"sinter",sinterCommand,-2,REDIS_CMD_DENYOOM,NULL,1,-1,1},
-            {"sinterstore",sinterstoreCommand,-3,REDIS_CMD_DENYOOM,NULL,2,-1,1},
-            {"sunion",sunionCommand,-2,REDIS_CMD_DENYOOM,NULL,1,-1,1},
-            {"sunionstore",sunionstoreCommand,-3,REDIS_CMD_DENYOOM,NULL,2,-1,1},
-            {"sdiff",sdiffCommand,-2,REDIS_CMD_DENYOOM,NULL,1,-1,1},
-            {"sdiffstore",sdiffstoreCommand,-3,REDIS_CMD_DENYOOM,NULL,2,-1,1},
-            {"smembers",sinterCommand,2,0,NULL,1,1,1},
-            {"zadd",zaddCommand,4,REDIS_CMD_DENYOOM,NULL,1,1,1},
-            {"zincrby",zincrbyCommand,4,REDIS_CMD_DENYOOM,NULL,1,1,1},
-            {"zrem",zremCommand,3,0,NULL,1,1,1},
-            {"zremrangebyscore",zremrangebyscoreCommand,4,0,NULL,1,1,1},
-            {"zremrangebyrank",zremrangebyrankCommand,4,0,NULL,1,1,1},
-            {"zunionstore",zunionstoreCommand,-4,REDIS_CMD_DENYOOM,zunionInterBlockClientOnSwappedKeys,0,0,0},
-            {"zinterstore",zinterstoreCommand,-4,REDIS_CMD_DENYOOM,zunionInterBlockClientOnSwappedKeys,0,0,0},
-            {"zrange",zrangeCommand,-4,0,NULL,1,1,1},
-            {"zrangebyscore",zrangebyscoreCommand,-4,0,NULL,1,1,1},
-            {"zrevrangebyscore",zrevrangebyscoreCommand,-4,0,NULL,1,1,1},
-            {"zcount",zcountCommand,4,0,NULL,1,1,1},
-            {"zrevrange",zrevrangeCommand,-4,0,NULL,1,1,1},
-            {"zcard",zcardCommand,2,0,NULL,1,1,1},
-            {"zscore",zscoreCommand,3,0,NULL,1,1,1},
-            {"zrank",zrankCommand,3,0,NULL,1,1,1},
-            {"zrevrank",zrevrankCommand,3,0,NULL,1,1,1},
-            {"hset",hsetCommand,4,REDIS_CMD_DENYOOM,NULL,1,1,1},
-            {"hsetnx",hsetnxCommand,4,REDIS_CMD_DENYOOM,NULL,1,1,1},
-            {"hget",hgetCommand,3,0,NULL,1,1,1},
-            {"hmset",hmsetCommand,-4,REDIS_CMD_DENYOOM,NULL,1,1,1},
-            {"hmget",hmgetCommand,-3,0,NULL,1,1,1},
-            {"hincrby",hincrbyCommand,4,REDIS_CMD_DENYOOM,NULL,1,1,1},
-            {"hdel",hdelCommand,3,0,NULL,1,1,1},
-            {"hlen",hlenCommand,2,0,NULL,1,1,1},
-            {"hkeys",hkeysCommand,2,0,NULL,1,1,1},
-            {"hvals",hvalsCommand,2,0,NULL,1,1,1},
-            {"hgetall",hgetallCommand,2,0,NULL,1,1,1},
-            {"hexists",hexistsCommand,3,0,NULL,1,1,1},
-            {"incrby",incrbyCommand,3,REDIS_CMD_DENYOOM,NULL,1,1,1},
-            {"decrby",decrbyCommand,3,REDIS_CMD_DENYOOM,NULL,1,1,1},
-            {"getset",getsetCommand,3,REDIS_CMD_DENYOOM,NULL,1,1,1},
-            {"mset",msetCommand,-3,REDIS_CMD_DENYOOM,NULL,1,-1,2},
-            {"msetnx",msetnxCommand,-3,REDIS_CMD_DENYOOM,NULL,1,-1,2},
-            {"randomkey",randomkeyCommand,1,0,NULL,0,0,0},
-            {"select",selectCommand,2,0,NULL,0,0,0},
-            {"move",moveCommand,3,0,NULL,1,1,1},
-            {"rename",renameCommand,3,0,NULL,1,1,1},
-            {"renamenx",renamenxCommand,3,0,NULL,1,1,1},
-            {"expire",expireCommand,3,0,NULL,0,0,0},
-            {"expireat",expireatCommand,3,0,NULL,0,0,0},
-            {"keys",keysCommand,2,0,NULL,0,0,0},
-            {"dbsize",dbsizeCommand,1,0,NULL,0,0,0},
-            {"auth",authCommand,2,0,NULL,0,0,0},
-            {"ping",pingCommand,1,0,NULL,0,0,0},
-            {"echo",echoCommand,2,0,NULL,0,0,0},
-            {"save",saveCommand,1,0,NULL,0,0,0},
-            {"bgsave",bgsaveCommand,1,0,NULL,0,0,0},
-            {"bgrewriteaof",bgrewriteaofCommand,1,0,NULL,0,0,0},
-            {"shutdown",shutdownCommand,1,0,NULL,0,0,0},
-            {"lastsave",lastsaveCommand,1,0,NULL,0,0,0},
-            {"type",typeCommand,2,0,NULL,1,1,1},
-            {"multi",multiCommand,1,0,NULL,0,0,0},
-            {"exec",execCommand,1,REDIS_CMD_DENYOOM,execBlockClientOnSwappedKeys,0,0,0},
-            {"discard",discardCommand,1,0,NULL,0,0,0},
-            {"sync",syncCommand,1,0,NULL,0,0,0},
-            {"flushdb",flushdbCommand,1,0,NULL,0,0,0},
-            {"flushall",flushallCommand,1,0,NULL,0,0,0},
-            {"sort",sortCommand,-2,REDIS_CMD_DENYOOM,NULL,1,1,1},
-            {"info",infoCommand,1,0,NULL,0,0,0},
-            {"monitor",monitorCommand,1,0,NULL,0,0,0},
-            {"ttl",ttlCommand,2,0,NULL,1,1,1},
-            {"persist",persistCommand,2,0,NULL,1,1,1},
-            {"slaveof",slaveofCommand,3,0,NULL,0,0,0},
-            {"debug",debugCommand,-2,0,NULL,0,0,0},
-            {"config",configCommand,-2,0,NULL,0,0,0},
-            {"subscribe",subscribeCommand,-2,0,NULL,0,0,0},
-            {"unsubscribe",unsubscribeCommand,-1,0,NULL,0,0,0},
-            {"psubscribe",psubscribeCommand,-2,0,NULL,0,0,0},
-            {"punsubscribe",punsubscribeCommand,-1,0,NULL,0,0,0},
-            {"publish",publishCommand,3,REDIS_CMD_FORCE_REPLICATION,NULL,0,0,0},
-            {"watch",watchCommand,-2,0,NULL,0,0,0},
-            {"unwatch",unwatchCommand,1,0,NULL,0,0,0},
-            {"object",objectCommand,-2,0,NULL,0,0,0},
-            {"slowlog",slowlogCommand,-2,0,NULL,0,0,0}
+            new RedisCommand("get", getCommand, 2, 0, null, 1, 1, 1),
+            {"set", setCommand, 3, REDIS_CMD_DENYOOM, NULL, 0, 0, 0},
+            {"setnx", setnxCommand, 3, REDIS_CMD_DENYOOM, NULL, 0, 0, 0},
+            {"setex", setexCommand, 4, REDIS_CMD_DENYOOM, NULL, 0, 0, 0},
+            {"append", appendCommand, 3, REDIS_CMD_DENYOOM, NULL, 1, 1, 1},
+            {"strlen", strlenCommand, 2, 0, NULL, 1, 1, 1},
+            {"del", delCommand, -2, 0, NULL, 0, 0, 0},
+            {"exists", existsCommand, 2, 0, NULL, 1, 1, 1},
+            {"setbit", setbitCommand, 4, REDIS_CMD_DENYOOM, NULL, 1, 1, 1},
+            {"getbit", getbitCommand, 3, 0, NULL, 1, 1, 1},
+            {"setrange", setrangeCommand, 4, REDIS_CMD_DENYOOM, NULL, 1, 1, 1},
+            {"getrange", getrangeCommand, 4, 0, NULL, 1, 1, 1},
+            {"substr", getrangeCommand, 4, 0, NULL, 1, 1, 1},
+            {"incr", incrCommand, 2, REDIS_CMD_DENYOOM, NULL, 1, 1, 1},
+            {"decr", decrCommand, 2, REDIS_CMD_DENYOOM, NULL, 1, 1, 1},
+            {"mget", mgetCommand, -2, 0, NULL, 1, -1, 1},
+            {"rpush", rpushCommand, 3, REDIS_CMD_DENYOOM, NULL, 1, 1, 1},
+            {"lpush", lpushCommand, 3, REDIS_CMD_DENYOOM, NULL, 1, 1, 1},
+            {"rpushx", rpushxCommand, 3, REDIS_CMD_DENYOOM, NULL, 1, 1, 1},
+            {"lpushx", lpushxCommand, 3, REDIS_CMD_DENYOOM, NULL, 1, 1, 1},
+            {"linsert", linsertCommand, 5, REDIS_CMD_DENYOOM, NULL, 1, 1, 1},
+            {"rpop", rpopCommand, 2, 0, NULL, 1, 1, 1},
+            {"lpop", lpopCommand, 2, 0, NULL, 1, 1, 1},
+            {"brpop", brpopCommand, -3, 0, NULL, 1, 1, 1},
+            {"brpoplpush", brpoplpushCommand, 4, REDIS_CMD_DENYOOM, NULL, 1, 2, 1},
+            {"blpop", blpopCommand, -3, 0, NULL, 1, 1, 1},
+            {"llen", llenCommand, 2, 0, NULL, 1, 1, 1},
+            {"lindex", lindexCommand, 3, 0, NULL, 1, 1, 1},
+            {"lset", lsetCommand, 4, REDIS_CMD_DENYOOM, NULL, 1, 1, 1},
+            {"lrange", lrangeCommand, 4, 0, NULL, 1, 1, 1},
+            {"ltrim", ltrimCommand, 4, 0, NULL, 1, 1, 1},
+            {"lrem", lremCommand, 4, 0, NULL, 1, 1, 1},
+            {"rpoplpush", rpoplpushCommand, 3, REDIS_CMD_DENYOOM, NULL, 1, 2, 1},
+            {"sadd", saddCommand, 3, REDIS_CMD_DENYOOM, NULL, 1, 1, 1},
+            {"srem", sremCommand, 3, 0, NULL, 1, 1, 1},
+            {"smove", smoveCommand, 4, 0, NULL, 1, 2, 1},
+            {"sismember", sismemberCommand, 3, 0, NULL, 1, 1, 1},
+            {"scard", scardCommand, 2, 0, NULL, 1, 1, 1},
+            {"spop", spopCommand, 2, 0, NULL, 1, 1, 1},
+            {"srandmember", srandmemberCommand, 2, 0, NULL, 1, 1, 1},
+            {"sinter", sinterCommand, -2, REDIS_CMD_DENYOOM, NULL, 1, -1, 1},
+            {"sinterstore", sinterstoreCommand, -3, REDIS_CMD_DENYOOM, NULL, 2, -1, 1},
+            {"sunion", sunionCommand, -2, REDIS_CMD_DENYOOM, NULL, 1, -1, 1},
+            {"sunionstore", sunionstoreCommand, -3, REDIS_CMD_DENYOOM, NULL, 2, -1, 1},
+            {"sdiff", sdiffCommand, -2, REDIS_CMD_DENYOOM, NULL, 1, -1, 1},
+            {"sdiffstore", sdiffstoreCommand, -3, REDIS_CMD_DENYOOM, NULL, 2, -1, 1},
+            {"smembers", sinterCommand, 2, 0, NULL, 1, 1, 1},
+            {"zadd", zaddCommand, 4, REDIS_CMD_DENYOOM, NULL, 1, 1, 1},
+            {"zincrby", zincrbyCommand, 4, REDIS_CMD_DENYOOM, NULL, 1, 1, 1},
+            {"zrem", zremCommand, 3, 0, NULL, 1, 1, 1},
+            {"zremrangebyscore", zremrangebyscoreCommand, 4, 0, NULL, 1, 1, 1},
+            {"zremrangebyrank", zremrangebyrankCommand, 4, 0, NULL, 1, 1, 1},
+            {"zunionstore", zunionstoreCommand, -4, REDIS_CMD_DENYOOM, zunionInterBlockClientOnSwappedKeys, 0, 0, 0},
+            {"zinterstore", zinterstoreCommand, -4, REDIS_CMD_DENYOOM, zunionInterBlockClientOnSwappedKeys, 0, 0, 0},
+            {"zrange", zrangeCommand, -4, 0, NULL, 1, 1, 1},
+            {"zrangebyscore", zrangebyscoreCommand, -4, 0, NULL, 1, 1, 1},
+            {"zrevrangebyscore", zrevrangebyscoreCommand, -4, 0, NULL, 1, 1, 1},
+            {"zcount", zcountCommand, 4, 0, NULL, 1, 1, 1},
+            {"zrevrange", zrevrangeCommand, -4, 0, NULL, 1, 1, 1},
+            {"zcard", zcardCommand, 2, 0, NULL, 1, 1, 1},
+            {"zscore", zscoreCommand, 3, 0, NULL, 1, 1, 1},
+            {"zrank", zrankCommand, 3, 0, NULL, 1, 1, 1},
+            {"zrevrank", zrevrankCommand, 3, 0, NULL, 1, 1, 1},
+            {"hset", hsetCommand, 4, REDIS_CMD_DENYOOM, NULL, 1, 1, 1},
+            {"hsetnx", hsetnxCommand, 4, REDIS_CMD_DENYOOM, NULL, 1, 1, 1},
+            {"hget", hgetCommand, 3, 0, NULL, 1, 1, 1},
+            {"hmset", hmsetCommand, -4, REDIS_CMD_DENYOOM, NULL, 1, 1, 1},
+            {"hmget", hmgetCommand, -3, 0, NULL, 1, 1, 1},
+            {"hincrby", hincrbyCommand, 4, REDIS_CMD_DENYOOM, NULL, 1, 1, 1},
+            {"hdel", hdelCommand, 3, 0, NULL, 1, 1, 1},
+            {"hlen", hlenCommand, 2, 0, NULL, 1, 1, 1},
+            {"hkeys", hkeysCommand, 2, 0, NULL, 1, 1, 1},
+            {"hvals", hvalsCommand, 2, 0, NULL, 1, 1, 1},
+            {"hgetall", hgetallCommand, 2, 0, NULL, 1, 1, 1},
+            {"hexists", hexistsCommand, 3, 0, NULL, 1, 1, 1},
+            {"incrby", incrbyCommand, 3, REDIS_CMD_DENYOOM, NULL, 1, 1, 1},
+            {"decrby", decrbyCommand, 3, REDIS_CMD_DENYOOM, NULL, 1, 1, 1},
+            {"getset", getsetCommand, 3, REDIS_CMD_DENYOOM, NULL, 1, 1, 1},
+            {"mset", msetCommand, -3, REDIS_CMD_DENYOOM, NULL, 1, -1, 2},
+            {"msetnx", msetnxCommand, -3, REDIS_CMD_DENYOOM, NULL, 1, -1, 2},
+            {"randomkey", randomkeyCommand, 1, 0, NULL, 0, 0, 0},
+            {"select", selectCommand, 2, 0, NULL, 0, 0, 0},
+            {"move", moveCommand, 3, 0, NULL, 1, 1, 1},
+            {"rename", renameCommand, 3, 0, NULL, 1, 1, 1},
+            {"renamenx", renamenxCommand, 3, 0, NULL, 1, 1, 1},
+            {"expire", expireCommand, 3, 0, NULL, 0, 0, 0},
+            {"expireat", expireatCommand, 3, 0, NULL, 0, 0, 0},
+            {"keys", keysCommand, 2, 0, NULL, 0, 0, 0},
+            {"dbsize", dbsizeCommand, 1, 0, NULL, 0, 0, 0},
+            {"auth", authCommand, 2, 0, NULL, 0, 0, 0},
+            {"ping", pingCommand, 1, 0, NULL, 0, 0, 0},
+            {"echo", echoCommand, 2, 0, NULL, 0, 0, 0},
+            {"save", saveCommand, 1, 0, NULL, 0, 0, 0},
+            {"bgsave", bgsaveCommand, 1, 0, NULL, 0, 0, 0},
+            {"bgrewriteaof", bgrewriteaofCommand, 1, 0, NULL, 0, 0, 0},
+            {"shutdown", shutdownCommand, 1, 0, NULL, 0, 0, 0},
+            {"lastsave", lastsaveCommand, 1, 0, NULL, 0, 0, 0},
+            {"type", typeCommand, 2, 0, NULL, 1, 1, 1},
+            {"multi", multiCommand, 1, 0, NULL, 0, 0, 0},
+            {"exec", execCommand, 1, REDIS_CMD_DENYOOM, execBlockClientOnSwappedKeys, 0, 0, 0},
+            {"discard", discardCommand, 1, 0, NULL, 0, 0, 0},
+            {"sync", syncCommand, 1, 0, NULL, 0, 0, 0},
+            {"flushdb", flushdbCommand, 1, 0, NULL, 0, 0, 0},
+            {"flushall", flushallCommand, 1, 0, NULL, 0, 0, 0},
+            {"sort", sortCommand, -2, REDIS_CMD_DENYOOM, NULL, 1, 1, 1},
+            {"info", infoCommand, 1, 0, NULL, 0, 0, 0},
+            {"monitor", monitorCommand, 1, 0, NULL, 0, 0, 0},
+            {"ttl", ttlCommand, 2, 0, NULL, 1, 1, 1},
+            {"persist", persistCommand, 2, 0, NULL, 1, 1, 1},
+            {"slaveof", slaveofCommand, 3, 0, NULL, 0, 0, 0},
+            {"debug", debugCommand, -2, 0, NULL, 0, 0, 0},
+            {"config", configCommand, -2, 0, NULL, 0, 0, 0},
+            {"subscribe", subscribeCommand, -2, 0, NULL, 0, 0, 0},
+            {"unsubscribe", unsubscribeCommand, -1, 0, NULL, 0, 0, 0},
+            {"psubscribe", psubscribeCommand, -2, 0, NULL, 0, 0, 0},
+            {"punsubscribe", punsubscribeCommand, -1, 0, NULL, 0, 0, 0},
+            {"publish", publishCommand, 3, REDIS_CMD_FORCE_REPLICATION, NULL, 0, 0, 0},
+            {"watch", watchCommand, -2, 0, NULL, 0, 0, 0},
+            {"unwatch", unwatchCommand, 1, 0, NULL, 0, 0, 0},
+            {"object", objectCommand, -2, 0, NULL, 0, 0, 0},
+            {"slowlog", slowlogCommand, -2, 0, NULL, 0, 0, 0}
     };
+
     public void initServer() {
         port = REDIS_SERVERPORT;
         bindAddr = null;
@@ -384,14 +386,15 @@ public class RedisServer {
     void appendServerSaveParams(long seconds, int changes) {
         saveParams.add(new SaveParam(seconds, changes));
     }
+
     void populateCommandTable() {
-        int numcommands = sizeof(readonlyCommandTable)/sizeof(struct redisCommand);
+        int numcommands = sizeof(readonlyCommandTable) / sizeof(struct redisCommand);
 
         for (int j = 0; j < numcommands; j++) {
-            struct redisCommand *c = readonlyCommandTable+j;
+            struct redisCommand *c = readonlyCommandTable + j;
             int retval;
 
-            retval = dictAdd(server.commands, sdsnew(c->name), c);
+            retval = dictAdd(server.commands, sdsnew(c -> name), c);
         }
     }
 

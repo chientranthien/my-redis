@@ -22,4 +22,7 @@ public class Util {
         return createObject(server, ObjectType.string, key);
     }
 
+    public static long time(Integer tmp){
+        return System.currentTimeMillis() / 1000;
+    }
 }
