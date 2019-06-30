@@ -18,7 +18,7 @@ public class RedisDb {
     Dict<String, RedisObject> watchedKeys;
     int id;
     public static RedisServer server;
-    SharedObjects shared;
+    public static SharedObjects shared;
 
     RedisObject lookupKey(RedisObject key) {
         Dict.Entry<RedisObject, RedisObject> entry = dict.find(key);

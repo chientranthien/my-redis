@@ -10,7 +10,7 @@ import static com.chientt.util.Util.createStringObject;
 public class SharedObjects {
     public static final int REDIS_SHARED_INTEGERS = 10000;
 
-    RedisObject crlf, ok, err, emptybulk, czero, cone, cnegone, pong, space,
+    public RedisObject crlf, ok, err, emptybulk, czero, cone, cnegone, pong, space,
             colon, nullbulk, nullmultibulk, queued,
             emptymultibulk, wrongtypeerr, nokeyerr, syntaxerr, sameobjecterr,
             outofrangeerr, loadingerr, plus,

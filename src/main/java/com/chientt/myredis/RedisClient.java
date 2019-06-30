@@ -1,10 +1,12 @@
 package com.chientt.myredis;
 
 import com.chientt.ae.AeEventLoop;
+import com.chientt.ae.AeFileEvent;
 import com.chientt.ae.AeFileProc;
 
 import java.util.List;
 
+import static com.chientt.ae.AeEventLoop.*;
 import static com.chientt.myredis.RedisServer.REDIS_REPL_NONE;
 import static com.chientt.myredis.RedisServer.REDIS_REPL_ONLINE;
 
@@ -50,7 +52,7 @@ public class RedisClient {
     public char[] buf = new char[REDIS_REPLY_CHUNK_BYTES];
 
 
-    RedisObject lookupKeyReadOrReply( RedisObject key, RedisObject reply) {
+    public RedisObject lookupKeyReadOrReply( RedisObject key, RedisObject reply) {
         RedisObject value = redisDb.lookupKeyRead( key);
         if (value!= null)
             addReply(reply);
@@ -85,7 +87,7 @@ public class RedisClient {
     }
 
 }
-    final static int REDIS_OK = 0;
+    public final static int REDIS_OK = 0;
     final static int REDIS_ERR = -1;
 
 
@@ -101,9 +103,10 @@ public class RedisClient {
 
 
     int aeCreateFileEvent(AeEventLoop eventLoop, int fd, int mask,
-                          AeFileProc *proc, void *clientData) {
-        if (fd >= AE_SETSIZE) return AE_ERR;
-        aeFileEvent * fe = &eventLoop -> events[fd];
+                          AeFileProc proc, Object clientData) {
+        if (fd >= AE_SETSIZE)
+            return AE_ERR;
+        AeFileEvent fe = eventLoop.events[fd];
 
         if (aeApiAddEvent(eventLoop, fd, mask) == -1)
             return AE_ERR;
